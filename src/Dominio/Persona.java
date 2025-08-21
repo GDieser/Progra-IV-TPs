@@ -12,7 +12,25 @@ public class Persona {
 	private String telefono;
 	private String email;
 	
+	//Constructores
+	public Persona()
+	{
+		this.nombre = "Sin nombre";
+		this.fechaNacimiento = LocalDate.of(2025, 01, 01);
+	}
 	
+	public Persona(String dni, String nombre, String apellido, LocalDate fechaNacimiento, String genero, String direccion, String telefono, String email)
+	{
+		
+		this.dni = dni;
+		this.nombre = nombre;
+		this.fechaNacimiento = fechaNacimiento;
+		this.genero = genero;
+		this.direccion = direccion;
+		this.telefono = telefono;
+		this.email = email;
+		
+	}
 	
 	//Getters y Setters
 	public String getDni() {

@@ -2,8 +2,16 @@ package Dominio;
 
 public class Empleado extends Persona{
 	
-	private int legajo;
+	private final int legajo;
 	private String puesto;
+	static int contador = 1000;
+	
+	public Empleado()
+	{
+		this.legajo = contador;
+		
+		contador++;
+	}
 	
 	
 	//Getters y Setters
