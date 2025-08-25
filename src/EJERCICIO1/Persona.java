@@ -1,4 +1,4 @@
-package Dominio;
+package EJERCICIO1;
 
 import java.time.LocalDate;
 
@@ -6,33 +6,41 @@ public class Persona {
 	
 	private String dni;
 	private String nombre;
+	private String apellido;
 	private LocalDate fechaNacimiento;
 	private String genero;
 	private String direccion;
 	private String telefono;
 	private String email;
 	
-	//Constructores
+	// Contructor vacío
 	public Persona()
 	{
 		this.nombre = "Sin nombre";
-		this.fechaNacimiento = LocalDate.of(2025, 01, 01);
+		this.fechaNacimiento = LocalDate.of(2025, 1, 1);
 	}
+	 
+    // Constructor con parámetros
+    public Persona(String dni, String nombre, String apellido, LocalDate fechaNacimiento, String genero, String direccion, String telefono, String email) {
+        this.dni = dni;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.fechaNacimiento = fechaNacimiento;
+        this.genero = genero;
+        this.direccion = direccion;
+        this.telefono = telefono;
+        this.email = email;
+    }
 	
-	public Persona(String dni, String nombre, String apellido, LocalDate fechaNacimiento, String genero, String direccion, String telefono, String email)
-	{
-		
-		this.dni = dni;
-		this.nombre = nombre;
-		this.fechaNacimiento = fechaNacimiento;
-		this.genero = genero;
-		this.direccion = direccion;
-		this.telefono = telefono;
-		this.email = email;
-		
+	//Metodo ToString
+	@Override
+	public String toString() {
+		return "Persona [dni=" + dni + ", nombre=" + nombre  + ", apellido=" + apellido 
+                +  ", fechaNacimiento=" + fechaNacimiento + ", genero="
+				+ genero + ", direccion=" + direccion + ", telefono=" + telefono + ", email=" + email + "]";
 	}
-	
-	//Getters y Setters
+
+	//Getter y Setters
 	public String getDni() {
 		return dni;
 	}
@@ -87,13 +95,6 @@ public class Persona {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-	
-	//Metodo ToString
-	@Override
-	public String toString() {
-		return "Persona [dni=" + dni + ", nombre=" + nombre + ", fechaNacimiento=" + fechaNacimiento + ", genero="
-				+ genero + ", direccion=" + direccion + ", telefono=" + telefono + ", email=" + email + "]";
 	}
 
 	

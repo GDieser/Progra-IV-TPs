@@ -4,5 +4,5 @@
 /**
  * 
  */
-module EJERCICIO1 {
+module TP1_GRUPO_8 {
 }
