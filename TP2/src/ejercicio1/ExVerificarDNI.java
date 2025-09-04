@@ -7,10 +7,11 @@ public class ExVerificarDNI extends RuntimeException {
 		
 	}
 
+
 	@Override
 	public String getMessage() {
 		
-		return "DNI incorrecto";
+		return "Formato de DNI incorrecto, debe ser exactamende de 8 caracteres numéricos.";
 	}
 	
 	
