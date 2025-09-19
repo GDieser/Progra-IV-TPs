@@ -6,7 +6,7 @@ public class Producto {
 	private String Nombre;
 	private double Precio;
 	private int Stock;
-	private Categoria Categoria;
+	private Categoria Categoria = new Categoria();
 
 	public Producto() {
 	}

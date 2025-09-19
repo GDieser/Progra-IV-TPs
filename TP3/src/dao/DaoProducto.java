@@ -23,6 +23,12 @@ public class DaoProducto {
 
 	// Alta normal
 	public int agregarProducto(Producto prod) {
+		
+		if (!existeCategoria(prod.getCategoria().getIdCategoria())) {
+	        System.out.println("La categoría con id " + prod.getCategoria().getIdCategoria() + " no existe. No se inserta el producto.");
+	        return 0;
+	    }
+		
 		Connection cn = null;
 		String query = "INSERT INTO Productos(Codigo, Nombre, Precio, Stock, IdCategoria) VALUES (?,?,?,?,?)";
 		int filas = 0;
@@ -48,11 +54,51 @@ public class DaoProducto {
 		}
 		return filas;
 	}
+	
+	
+	// obtener producto por codigo
+	public Producto obtenerProductoPorCodigo(String codigo) {
+		
+		String query = "SELECT p.Codigo, p.Nombre, p.Precio, p.Stock, c.IdCategoria, c.Nombre AS NombreCategoria FROM Productos p INNER JOIN Categorias c ON p.IdCategoria = c.IdCategoria WHERE p.Codigo = ?";
+		Connection cn = null;
+		Producto prod = new Producto();
+
+		try {
+			cn = DriverManager.getConnection(host + dbName,  user,  pass);
+			PreparedStatement pst = cn.prepareStatement(query);
+			pst.setString(1, codigo);
+			ResultSet rs = pst.executeQuery();
+			
+			if(!rs.next()) {
+				return null;
+			}
+			
+			prod.setCodigo(rs.getString("Codigo"));
+			prod.setNombre(rs.getString("Nombre"));
+			prod.setPrecio(rs.getDouble("Precio"));
+			prod.setStock(rs.getInt("Stock"));
+			prod.getCategoria().setIdCategoria(rs.getInt("IdCategoria"));
+			prod.getCategoria().setNombre(rs.getString("NombreCategoria"));
+			
+		}
+		catch (SQLException e){
+			e.printStackTrace();
+		}
+		finally {
+			try {	
+				cn.close();
+			}
+			catch (SQLException e){
+				e.printStackTrace();				
+			}
+		}
+		return prod;
+	}
 
 	// Listado
 	public ArrayList<Producto> obtenerProductos() {
 		Connection cn = null;
-		String query = "SELECT * FROM Productos";
+		String query = "SELECT p.Codigo, p.Nombre, p.Precio, p.Stock, c.IdCategoria, c.Nombre AS NombreCategoria FROM Productos p INNER JOIN Categorias c ON p.IdCategoria = c.IdCategoria";
 		ArrayList<Producto> productos = new ArrayList<>();
 
 		try {
@@ -67,6 +113,7 @@ public class DaoProducto {
 				prod.setPrecio(rs.getDouble("Precio"));
 				prod.setStock(rs.getInt("Stock"));
 				prod.getCategoria().setIdCategoria(rs.getInt("IdCategoria"));
+				prod.getCategoria().setNombre(rs.getString("NombreCategoria"));
 				productos.add(prod);
 			}
 		} catch (SQLException e) {
@@ -107,8 +154,13 @@ public class DaoProducto {
 
 	// Modificacion
 	public int modificarProducto(Producto prod) {
+		if (!existeCategoria(prod.getCategoria().getIdCategoria())) {
+	        System.out.println("La categoría con id " + prod.getCategoria().getIdCategoria() + " no existe.");
+	        return 0; 
+		}
+		
 		Connection cn = null;
-		String query = "UPDATE Productos SET Nombre = ?, Precio = ?, Stock = ?, idCategoria = ? WHERE Codigo = ?";
+		String query = "UPDATE Productos SET Nombre = ?, Precio = ?, Stock = ?, IdCategoria = ? WHERE Codigo = ?";
 		int filas = 0;
 
 		try {
@@ -133,7 +185,16 @@ public class DaoProducto {
 	}
 	
 	// Alta con Procedimiento almacenado
-	public void agregarProductoConSP(Producto prod) {
+	public boolean agregarProductoConSP(Producto prod) {
+		
+		boolean exito = false;
+		
+		 if (!existeCategoria(prod.getCategoria().getIdCategoria())) {
+		        System.out.println("La categoría con id " + prod.getCategoria().getIdCategoria() + " no existe.");
+		        return exito; 
+		 }
+		 
+		
 		Connection cn = null;
 		String query = "CALL sp_AgregarProducto(?,?,?,?,?)";
 
@@ -145,7 +206,8 @@ public class DaoProducto {
 			cst.setDouble(3, prod.getPrecio());
 			cst.setInt(4, prod.getStock());
 			cst.setInt(5, prod.getCategoria().getIdCategoria());
-			cst.execute();
+			exito = cst.execute();
+		
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -156,6 +218,31 @@ public class DaoProducto {
 				e.printStackTrace();
 			}
 		}
+		return exito;
 	}
+	
+	private boolean existeCategoria(int idCategoria) {
+	    Connection cn = null;
+	    PreparedStatement pst = null;
+	    ResultSet rs = null;
+	    String query = "SELECT 1 FROM Categorias WHERE IdCategoria = ?";
+	    boolean existe = false;
+
+	    try {
+	        cn = DriverManager.getConnection(host + dbName, user, pass);
+	        pst = cn.prepareStatement(query);
+	        pst.setInt(1, idCategoria);
+	        rs = pst.executeQuery();
+	        existe = rs.next();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    } finally {
+	        try { if (rs != null) rs.close(); } catch (SQLException e) { e.printStackTrace(); }
+	        try { if (pst != null) pst.close(); } catch (SQLException e) { e.printStackTrace(); }
+	        try { if (cn != null) cn.close(); } catch (SQLException e) { e.printStackTrace(); }
+	    }
+	    return existe;
+	}
+
 }
 
